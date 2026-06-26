@@ -47,3 +47,13 @@ export interface MangaEntry {
   start_date_is_estimated?: boolean;
   cover?: any;
 }
+
+export interface MangaProvider {
+  id: number;
+  provider_name: string;
+  scanlator_name?: string;
+  external_id: string;
+  base_url: string;
+
+  mangaEntryId: string;
+}

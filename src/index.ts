@@ -1,4 +1,4 @@
-import type { Chapter, MangaEntry, Page } from "./types";
+import type { Chapter, MangaEntry, MangaProvider, Page } from "./types";
 import ky, { type KyInstance } from "ky";
 
 export default class MangaDatabaseSDK {
@@ -40,7 +40,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchChapters(providerId: string): Promise<Chapter[]> {
-    const url = new URL(`/chapters/${mangaId}`, this.baseUrl);
+    const url = new URL(`/chapters/${providerId}`, this.baseUrl);
 
     const response = await this.api
       .get<{ data: Chapter[] }>(url)
@@ -49,11 +49,11 @@ export default class MangaDatabaseSDK {
     return response.data;
   }
 
-  async fetchProvider(mangaId: string) {
-    const url = new URL(`/best_provider/${mangaId}`, this.baseUrl);
+  async fetchProvider(mangaId: string): Promise<MangaProvider> {
+    const url = new URL(`/bestProvider/${mangaId}`, this.baseUrl);
 
     const response = await this.api
-      .get<{ data: Chapter[] }>(url)
+      .get<{ data: MangaProvider }>(url)
       .then((r) => r.json());
 
     return response.data;
