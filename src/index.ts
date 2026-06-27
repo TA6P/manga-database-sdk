@@ -1,4 +1,4 @@
-export * from "./types.ts"
+export * from "./types.ts";
 import type {
   BaseCharacterData,
   Chapter,
@@ -14,13 +14,14 @@ export default class MangaDatabaseSDK {
   private malApi: KyInstance;
 
   constructor(
-    private readonly baseUrl: string,
+    private readonly baseDatabaseUrl: string,
+    private readonly baseMalUrl: string,
     private readonly timeout = 10_000,
     private readonly retryLimit = 5,
     private readonly backOffLimit = 3000,
   ) {
     this.api = ky.create({
-      baseUrl: this.baseUrl,
+      baseUrl: this.baseDatabaseUrl,
       timeout: this.timeout,
       retry: {
         limit: this.retryLimit,
@@ -29,7 +30,7 @@ export default class MangaDatabaseSDK {
       },
     });
     this.malApi = ky.create({
-      baseUrl: "miribyou.riatsustreamingm3u8.workers.dev/v4",
+      baseUrl: baseMalUrl,
       timeout: this.timeout,
       retry: {
         limit: this.retryLimit,
@@ -48,7 +49,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchPages(chapterId: string): Promise<Page[]> {
-    const url = new URL(`/pages/${chapterId}`, this.baseUrl);
+    const url = new URL(`/pages/${chapterId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Page[] }>(url)
@@ -58,7 +59,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchChapters(providerId: number): Promise<Chapter[]> {
-    const url = new URL(`/chapters/${providerId}`, this.baseUrl);
+    const url = new URL(`/chapters/${providerId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Chapter[] }>(url)
@@ -68,7 +69,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchProvider(mangaId: string): Promise<MangaProvider> {
-    const url = new URL(`/bestProvider/${mangaId}`, this.baseUrl);
+    const url = new URL(`/bestProvider/${mangaId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: MangaProvider }>(url)
@@ -86,7 +87,7 @@ export default class MangaDatabaseSDK {
     page?: number;
     pageSize?: number;
   }): Promise<MangaEntry[]> {
-    const url = new URL("/top", this.baseUrl);
+    const url = new URL("/top", this.baseDatabaseUrl);
 
     url.searchParams.set("sort_by", sortBy.join(","));
     if (page) url.searchParams.set("page", page.toString());
@@ -100,7 +101,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchCharacters(malId: number): Promise<BaseCharacterData[]> {
-    const url = new URL(`/manga/${malId}/characters`, this.baseUrl);
+    const url = new URL(`/manga/${malId}/characters`, this.baseMalUrl);
 
     const response = await this.malApi
       .get<{ data: BaseCharacterData[] }>(url)
@@ -112,7 +113,7 @@ export default class MangaDatabaseSDK {
   async fetchCharacterInfoSpecs(
     characterMalId: number,
   ): Promise<CharacterInfoSpec[]> {
-    const url = new URL(`/characters/${characterMalId}/full`, this.baseUrl);
+    const url = new URL(`/characters/${characterMalId}/full`, this.baseMalUrl);
 
     const response = await this.malApi
       .get<{ data: CharacterInfoSpec[] }>(url)
