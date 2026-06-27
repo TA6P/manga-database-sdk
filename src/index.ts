@@ -6,7 +6,7 @@ export default class MangaDatabaseSDK {
 
   constructor(
     private readonly baseUrl: string,
-    private readonly timeout = 3_000,
+    private readonly timeout = 10_000,
     private readonly retryLimit = 5,
     private readonly backOffLimit = 3000,
   ) {
@@ -39,7 +39,7 @@ export default class MangaDatabaseSDK {
     return response.data;
   }
 
-  async fetchChapters(providerId: string): Promise<Chapter[]> {
+  async fetchChapters(providerId: number): Promise<Chapter[]> {
     const url = new URL(`/chapters/${providerId}`, this.baseUrl);
 
     const response = await this.api
@@ -65,14 +65,14 @@ export default class MangaDatabaseSDK {
     pageSize,
   }: {
     sortBy: string[];
-    page: number;
-    pageSize: number;
+    page?: number;
+    pageSize?: number;
   }): Promise<MangaEntry[]> {
     const url = new URL("/top", this.baseUrl);
 
     url.searchParams.set("sort_by", sortBy.join(","));
-    url.searchParams.set("page", page.toString());
-    url.searchParams.set("page_size", pageSize.toString());
+    if (page) url.searchParams.set("page", page.toString());
+    if (pageSize) url.searchParams.set("page_size", pageSize.toString());
 
     const response = await this.api
       .get<{ data: MangaEntry[] }>(url)
