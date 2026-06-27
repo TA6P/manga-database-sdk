@@ -57,3 +57,28 @@ export interface MangaProvider {
 
   mangaEntryId: string;
 }
+
+export interface BaseCharacterData {
+  role: string;
+  character: {
+    mal_id: number;
+    url: string;
+    name: string;
+    images: {
+      jpg: {
+        image_url: string;
+      };
+      webp: {
+        image_url: string;
+      };
+    };
+  };
+}
+
+export interface CharacterInfoSpec {
+  name: string;
+  spoilers: string[];
+  nicknames: string[];
+  imageUrl: string;
+  about: string;
+}

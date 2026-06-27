@@ -1,8 +1,16 @@
-import type { Chapter, MangaEntry, MangaProvider, Page } from "./types";
+import type {
+  BaseCharacterData,
+  Chapter,
+  CharacterInfoSpec,
+  MangaEntry,
+  MangaProvider,
+  Page,
+} from "./types";
 import ky, { type KyInstance } from "ky";
 
 export default class MangaDatabaseSDK {
   private api: KyInstance;
+  private malApi: KyInstance;
 
   constructor(
     private readonly baseUrl: string,
@@ -12,6 +20,15 @@ export default class MangaDatabaseSDK {
   ) {
     this.api = ky.create({
       baseUrl: this.baseUrl,
+      timeout: this.timeout,
+      retry: {
+        limit: this.retryLimit,
+        methods: ["get", "post"],
+        backoffLimit: this.backOffLimit,
+      },
+    });
+    this.malApi = ky.create({
+      baseUrl: "miribyou.riatsustreamingm3u8.workers.dev/v4",
       timeout: this.timeout,
       retry: {
         limit: this.retryLimit,
@@ -76,6 +93,28 @@ export default class MangaDatabaseSDK {
 
     const response = await this.api
       .get<{ data: MangaEntry[] }>(url)
+      .then((r) => r.json());
+
+    return response.data;
+  }
+
+  async fetchCharacters(malId: number): Promise<BaseCharacterData[]> {
+    const url = new URL(`/manga/${malId}/characters`, this.baseUrl);
+
+    const response = await this.malApi
+      .get<{ data: BaseCharacterData[] }>(url)
+      .then((r) => r.json());
+
+    return response.data;
+  }
+
+  async fetchCharacterInfoSpecs(
+    characterMalId: number,
+  ): Promise<CharacterInfoSpec[]> {
+    const url = new URL(`/characters/${characterMalId}/full`, this.baseUrl);
+
+    const response = await this.malApi
+      .get<{ data: CharacterInfoSpec[] }>(url)
       .then((r) => r.json());
 
     return response.data;
