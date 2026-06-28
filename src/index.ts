@@ -48,8 +48,11 @@ export default class MangaDatabaseSDK {
     return response;
   }
 
-  async fetchPages(chapterId: string): Promise<Page[]> {
-    const url = new URL(`/pages/${chapterId}`, this.baseDatabaseUrl);
+  async fetchPages(chapterId: string, providerId: string): Promise<Page[]> {
+    const url = new URL(
+      `/pages/${chapterId}/${providerId}`,
+      this.baseDatabaseUrl,
+    );
 
     const response = await this.api
       .get<{ data: Page[] }>(url)
@@ -58,8 +61,8 @@ export default class MangaDatabaseSDK {
     return response.data;
   }
 
-  async fetchChapters(chapterId: string, providerId: number): Promise<Chapter[]> {
-    const url = new URL(`/chapters/${chapterId}/${providerId}`, this.baseDatabaseUrl);
+  async fetchChapters(providerId: number): Promise<Chapter[]> {
+    const url = new URL(`/chapters/${providerId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Chapter[] }>(url)
