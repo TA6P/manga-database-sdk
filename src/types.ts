@@ -9,9 +9,9 @@ export interface Page {
 
 export interface Chapter {
   id: string;
-  chapterNumber: number;
+  chapter_number: number;
   title?: string;
-  fetchedAt: Date;
+  fetched_at: Date;
 }
 
 export interface MangaEntry {
