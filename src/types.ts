@@ -31,8 +31,10 @@ export interface MangaEntry {
   last_updated_at: string;
   romanized_title?: string;
   popularity?: number;
+  sources: SourceOrigin[];
 
   action_score?: number;
+  normalized_action_score: number;
   romance_score?: number;
   slice_of_life_score?: number;
 
@@ -81,4 +83,13 @@ export interface CharacterInfoSpec {
   nicknames: string[];
   imageUrl: string;
   about: string;
+}
+
+export interface SourceOrigin {
+  name: string;
+  cover: string;
+  id: string;
+  rating: number;
+  last_updated_at: Date;
+  rating_normalized: number;
 }
