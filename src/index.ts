@@ -58,8 +58,8 @@ export default class MangaDatabaseSDK {
     return response.data;
   }
 
-  async fetchChapters(providerId: number): Promise<Chapter[]> {
-    const url = new URL(`/chapters/${providerId}`, this.baseDatabaseUrl);
+  async fetchChapters(chapterId: string, providerId: number): Promise<Chapter[]> {
+    const url = new URL(`/chapters/${chapterId}/${providerId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Chapter[] }>(url)
