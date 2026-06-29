@@ -115,11 +115,11 @@ export default class MangaDatabaseSDK {
 
   async fetchCharacterInfoSpecs(
     characterMalId: number,
-  ): Promise<CharacterInfoSpec[]> {
+  ): Promise<CharacterInfoSpec> {
     const url = new URL(`/characters/${characterMalId}/full`, this.baseMalUrl);
 
     const response = await this.malApi
-      .get<{ data: CharacterInfoSpec[] }>(url)
+      .get<{ data: CharacterInfoSpec }>(url)
       .then((r) => r.json());
 
     return response.data;
