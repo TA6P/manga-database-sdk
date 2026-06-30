@@ -9,7 +9,7 @@ export interface Page {
 
 export interface Chapter {
   id: string;
-  chapter_number: number;
+  number: number;
   title?: string;
   fetched_at: Date;
 }
