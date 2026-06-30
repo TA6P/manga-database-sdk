@@ -49,7 +49,7 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchPages(chapterId: string, mangaId: string): Promise<Page[]> {
-    const url = new URL(`/pages/${chapterId}/${mangaId}`, this.baseDatabaseUrl);
+    const url = new URL(`/pages/${mangaId}/${chapterId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Page[] }>(url)
