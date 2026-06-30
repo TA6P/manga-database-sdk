@@ -48,11 +48,8 @@ export default class MangaDatabaseSDK {
     return response;
   }
 
-  async fetchPages(chapterId: string, providerId: string): Promise<Page[]> {
-    const url = new URL(
-      `/pages/${chapterId}/${providerId}`,
-      this.baseDatabaseUrl,
-    );
+  async fetchPages(chapterId: string, mangaId: string): Promise<Page[]> {
+    const url = new URL(`/pages/${chapterId}/${mangaId}`, this.baseDatabaseUrl);
 
     const response = await this.api
       .get<{ data: Page[] }>(url)
@@ -62,23 +59,17 @@ export default class MangaDatabaseSDK {
   }
 
   async fetchChapters(providerId: number): Promise<Chapter[]> {
-    const url = new URL(`/chapters/${providerId}`, this.baseDatabaseUrl);
+    const url = new URL(`/allChapters/${providerId}`, this.baseDatabaseUrl);
 
     const response = await this.api
-      .get<{ data: Chapter[] }>(url)
+      .get<{ data: Chapter[][] }>(url)
       .then((r) => r.json());
 
-    return response.data;
-  }
+    const bestChapterCollection = response.data.sort(
+      (a, b) => b.length - a.length,
+    )[0]!;
 
-  async fetchProvider(mangaId: string): Promise<MangaProvider> {
-    const url = new URL(`/bestProvider/${mangaId}`, this.baseDatabaseUrl);
-
-    const response = await this.api
-      .get<{ data: MangaProvider }>(url)
-      .then((r) => r.json());
-
-    return response.data;
+    return bestChapterCollection;
   }
 
   async fetchTop({
